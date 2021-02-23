@@ -8,3 +8,4 @@ for _ in range(N):
     max_of_cards = max(max_of_cards, min_row)
 print(max_of_cards)
 
+
