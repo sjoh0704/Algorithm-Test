@@ -1,5 +1,6 @@
+import sys
 from collections import deque
-read = input
+read = sys.stdin.readline
 N, M = map(int, read().split())
 board = []
 R, B =[], []
@@ -10,10 +11,10 @@ for i in range(N):
             R = [i, j]
         if board[i][j] == 'B':
             B = [i, j]
-visit_R = [[0 for _ in range(M)] for _ in range(N)]
-visit_B = [[0 for _ in range(M)] for _ in range(N)]
-visit_B[B[0]][B[1]] = 1
-visit_R[R[0]][R[1]] = 1
+
+
+visit= [[[[0] * M for _ in range(N)]for _ in range(M)]for _ in range(N)]
+visit[B[0]][B[1]][R[0]][R[1]] = 1
 
 def sol():
 
@@ -24,21 +25,27 @@ def sol():
     dx = [0, 0, 1, -1]
     dy = [1, -1, 0, 0]
     while queue:
-        print(queue)
+
         cry, crx, cby, cbx, cc = queue.popleft()
 
         if cc > 10:
             return -1
 
+        # 빨간색공이 빠지고, 파란색공이 안빠지는 경우 성공
         if board[cry][crx] == "O" and board[cby][cbx] != "O":
             return cc
-        if board[cry][crx] == "O" and board[cby][cbx] == "O":
-            return -1
+
+        # 파란색공이 빠진 경우
+        elif board[cby][cbx] == "O":
+            continue
+
         for i in range(4):
             nry = cry
             nrx = crx
             nby = cby
             nbx = cbx
+
+            # 빨간공 먼저
             while 1 <= nrx <M-1 and 1<= nry < N-1 and board[nry][nrx] != '#':
                 nry += dy[i]
                 nrx += dx[i]
@@ -48,6 +55,8 @@ def sol():
                 nry -= dy[i]
                 nrx -= dx[i]
 
+
+            # 다음 파란공
             while 1 <= nbx < M - 1 and 1 <= nby < N - 1 and board[nby][nbx] != '#':
                 nby += dy[i]
                 nbx += dx[i]
@@ -57,6 +66,7 @@ def sol():
                 nby -= dy[i]
                 nbx -= dx[i]
 
+            # 빨간공과 파란공이 같은 위치에 있을 경우 처리
             if not (board[nry][nrx] == "O" and board[nby][nbx] == "O"):
                 if nrx == nbx and nry == nby:
                     red_diantce = abs(nrx-crx) + abs(nry - cry)
@@ -67,9 +77,10 @@ def sol():
                     else:
                         nry -= dy[i]
                         nrx -= dx[i]
-            if visit_R[nry][nrx] == 0 or visit_B[nby][nbx] == 0:
-                visit_R[nry][nrx] = 1
-                visit_B[nby][nbx] = 1
+            if visit[nry][nrx][nby][nbx] == 0:
+                visit[nry][nrx][nby][nbx] = 1
                 queue.append([nry, nrx, nby, nbx, cc+1])
-    return  -1
+
+    # 갈곳이 없어서 멈추는 경우
+    return -1
 print(sol())
