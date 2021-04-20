@@ -17,7 +17,6 @@ def findAncestor(graph, current, next):
         tmp = graph[next][0]
         na.append(tmp)
         next = tmp
-
     answer = 0
     for i, n in enumerate(na[::-1]):
         for j, c in enumerate(ca[::-1]):
@@ -40,18 +39,20 @@ def sol():
     queue = deque()
     queue.append(1)
     before = 1
+    dir = []
     while queue:
-
         current = queue.popleft()
-        if current in graph[before]:
-            tmp = 1
-        else:
-            tmp = findAncestor(graph2, before, current)
-
-        cnt += tmp
-        before = current
+        dir.append(current)
         for next in graph[current]:
             queue.append(next)
+
+    for i in range(1, len(dir)):
+        if dir[i] in graph[dir[i-1]]:
+            tmp = 1
+        else:
+            tmp = findAncestor(graph2, dir[i-1], dir[i])
+        cnt += tmp
+
     return cnt
 
 T = int(input())
