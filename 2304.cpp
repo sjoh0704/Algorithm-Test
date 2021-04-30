@@ -75,15 +75,9 @@ int main() {
 
 	int total = 0;
 
-	for (int i = start; i <= end; i++) {
+	for (int i = start; i <= end; i++)
 		total += area[i];
 
-		cout << area[i] << endl;
-
-	}
-		
 	cout << total;
-
-	
 	return 0;
 }
