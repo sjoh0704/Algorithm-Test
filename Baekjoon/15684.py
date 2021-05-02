@@ -2,61 +2,51 @@ import sys
 read = sys.stdin.readline
 N, M, H = map(int, read().split())
 ladder = [['0'] * (N+1) for _ in range(H+1)]
+minValue = sys.maxsize
 for _ in range(M):
     a, b = map(int, read().split())
     ladder[a][b] = '<'
     ladder[a][b+1] = '>'
-answer = -1
-minValue = sys.maxsize
 
-def go(start):
-    currentPosition = start
-    for i in range(1, H+1):
-        if ladder[i][currentPosition] == '0':
-            continue
-        else:
-            if ladder[i][currentPosition] == '>':
-                currentPosition -= 1
-            elif ladder[i][currentPosition] == '<':
-                currentPosition += 1
+def go():
+    for j in range(1, N+1):
+        currentPosition = j
+        for i in range(1, H+1):
+            if ladder[i][currentPosition] == '0':
+                continue
+            else:
+                if ladder[i][currentPosition] == '>':
+                    currentPosition -= 1
+                elif ladder[i][currentPosition] == '<':
+                    currentPosition += 1
+        if currentPosition != j:
+            return False
+    return True
 
-    if currentPosition == start:
-        return True
-    else:
-        return False
-
-def findBridge(ladder, bridge):
+def findBridge(bridge, a=1):
     global minValue
-    global answer
-    # print("findBridge")
-    if bridge > 3:
+
+    if bridge > 3 or bridge >= minValue :
         return
 
-    for j in range(1, N):
+    for j in range(a, N):
         for i in range(1, H+1):
-            if ladder[i][j] == '<' or ladder[i][j]=='>'or \
+            if not(ladder[i][j] == '<' or ladder[i][j]=='>'or \
                     ladder[i][j-1] == '<'or\
-                    ladder[i][j+1] == '<' or ladder[i][j+1]=='>':
-                continue
-
-            else:
+                    ladder[i][j+1] == '<' or ladder[i][j+1]=='>'):
                 ladder[i][j] = '<'
                 ladder[i][j+1] = '>'
-                Flag = True
-                for k in range(1, N+1):
-                    if not go(k):
-                        Flag = False
-                        break
+
+                Flag = go()
                 if Flag:
                     minValue = min(minValue, bridge)
 
                 else:
-                    findBridge(ladder, bridge+1)
-
+                    findBridge(bridge+1, j)
                 ladder[i][j] = '0'
                 ladder[i][j + 1] = '0'
 
-def sol(ladder):
+def sol():
     if M == 0:
         print(0)
         return
@@ -68,4 +58,4 @@ def sol(ladder):
         print(minValue)
 
 
-sol(ladder)
+sol()

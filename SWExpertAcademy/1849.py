@@ -1,7 +1,26 @@
+
+
+def find(dic, start, target, cnt=0):
+    print("find!!!")
+    print(start, target)
+
+    for node in dic[start]:
+
+
+        if node[0] == target:
+            cnt += node[1]
+            return cnt
+        else:
+            print("dd")
+            if dic[node[0]] != node[0]:
+                find(dic, node[0], target, cnt)
+
+    return 0
 def sol():
     N, M = map(int ,input().split())
     compare = []
     answer = []
+    dic = {i+1: [] for i in range(N)}
     if N == 1:
         answer.append('UNKNOWN')
         return answer
@@ -10,36 +29,25 @@ def sol():
         tmp = input().split()
 
         compare.append([tmp[0]]+list(map(int, tmp[1:])))
-
-    result = ['x' for _ in range(N+1)]
-
+    cnt = 0
     for i in range(len(compare)):
+        cnt = 0
         if compare[i][0] == '!':
-            if result[compare[i][1]] == 'x' and result[compare[i][2]] == 'x':
-                result[compare[i][1]] = 0
-                result[compare[i][2]] = compare[i][3] + result[compare[i][1]]
-            elif result[compare[i][1]] == 'x':
-                result[compare[i][1]] = result[compare[i][2]] - compare[i][3]
-            elif result[compare[i][2]] == 'x':
-                result[compare[i][2]] = result[compare[i][1]] + compare[i][3]
-            else:
-                continue
-
+            dic[compare[i][1]].append([compare[i][2], compare[i][3]])
+            dic[compare[i][2]].append([compare[i][1], -compare[i][3]])
         else:
-            if result[compare[i][1]] != 'x' and result[compare[i][2]] != 'x':
-                answer.append(result[compare[i][2]] - result[compare[i][1]])
+            print("{}번째".format(i+1))
+            cnt += find(dic, compare[i][1], compare[i][2])
 
-            else:
-                answer.append("UNKNOWN")
-    return answer
+    print(cnt)
 
-
-T = int(input().strip())
-tmp = []
-for i in range(T):
-    tmp.append(sol())
-for i in range(T):
-    print("#{} {}".format(i+1, " ".join(map(str, tmp[i]))))
+sol()
+# T = int(input().strip())
+# tmp = []
+# for i in range(T):
+#     tmp.append(sol())
+# for i in range(T):
+#     print("#{} {}".format(i+1, " ".join(map(str, tmp[i]))))
 
 # from collections import defaultdict
 #
