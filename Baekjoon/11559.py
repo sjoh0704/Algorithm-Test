@@ -56,13 +56,50 @@ def bfs(start):
                     visited.append([nx, ny])
                     queue.append([nx, ny])
 def down():
+    for i in range(6):
+        tmp = 0
+        for j in range(11, -1, -1):
+            if field[j][i] != ".":
+                for k in range(11, j-1, -1):
+                    if field[k][i] == ".":
+                        field[k][i] = field[j][i]
+                        field[j][i] = '.'
+                        break
+
+def check(tmp, field):
     for i in range(12):
         for j in range(6):
-            if field[j]
+            if field[i][j] != tmp[i][j]:
+                return True
+    return False
 
-bfs(find())
-for i in range(12):
-    print(field[i])
+recursion = True
+cnt = 0
+while recursion:
+    tmp = [item[:] for item in field]
+
+    start_point = find()
+    if len(start_point) == 0:
+        break
+
+    bfs(start_point)
+    print("explosion")
+    for i in range(12):
+        print(field[i])
+    print()
+    cnt += 1
+    down()
+    print("down")
+    for i in range(12):
+        print(field[i])
+    print()
+
+    recursion = check(tmp, field)
+
+print(cnt)
+
+
+
 #
 # bfs(find())
 # for i in range(12):
