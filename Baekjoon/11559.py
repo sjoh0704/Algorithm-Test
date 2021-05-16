@@ -1,220 +1,52 @@
-import sys
 from collections import deque
-read = sys.stdin.readline
-field = []
-dx = [0, 0, 1, -1]
-dy = [1, -1, 0, 0]
-for _ in range(12):
-    field.append(list(read().strip()))
-
-
-def bfs():
-    visited = [[0, 0]]
-    queue = deque()
-    queue.append([0, 0])
-    R = []
-    G = []
-    B = []
-    P = []
-    Y = []
-    while queue:
-        # for i in range(12):
-        #     print(field[i])
-        # print()
-        cy, cx = queue.popleft()
-        # print(cx, cy, field[cy][cx])
-        # print(R)
-
-        color = field[cy][cx]
-        if color == 'R':
-            if [cy, cx] in R:
-                continue
-            R.append([cy, cx])
-            emptySide = True
-            for i in range(4):
-                nx = cx + dx[i]
-                ny = cy + dy[i]
-
-                if 0 <= nx < 6 and 0 <= ny < 12 and field[ny][nx] == 'R':
-                    if [ny, nx] not in R:
-                        emptySide = False
-                        visited.append([ny, nx])
-                        queue.append([ny, nx])
-
-            if emptySide:
-                if len(R) >= 4:
-                    for ry, rx in R:
-                        field[ry][rx] = '.'
-                R = []
-
-        elif color == 'G':
-
-            if [cy, cx] in G:
-                continue
-            G.append([cy, cx])
-            emptySide = True
-            for i in range(4):
-                nx = cx + dx[i]
-                ny = cy + dy[i]
-
-                if 0<= nx < 6 and 0<=ny<12 and field[ny][nx] == 'G':
-                    if [ny, nx] not in G:
-                        emptySide = False
-                        visited.append([ny, nx])
-                        queue.append([ny, nx])
-
-            if emptySide:
-                if len(G) >= 4:
-                    for ry, rx in G:
-                        field[ry][rx] = '.'
-                G = []
-
-
-        elif color == 'B':
-
-            if [cy, cx] in B:
-                continue
-
-            B.append([cy, cx])
-
-            emptySide = True
-
-            for i in range(4):
-
-                nx = cx + dx[i]
-
-                ny = cy + dy[i]
-
-                if 0 <= nx < 6 and 0 <= ny < 12 and field[ny][nx] == 'B':
-
-                    if [ny, nx] not in B:
-                        emptySide = False
-
-                        visited.append([ny, nx])
-
-                        queue.append([ny, nx])
-
-            if emptySide:
-
-                if len(B) >= 4:
-
-                    for ry, rx in B:
-                        field[ry][rx] = '.'
-
-                B = []
-
-
-        elif color == 'P':
-
-            if [cy, cx] in P:
-                continue
-
-            P.append([cy, cx])
-
-            emptySide = True
-
-            for i in range(4):
-
-                nx = cx + dx[i]
-
-                ny = cy + dy[i]
-
-                if 0 <= nx < 6 and 0 <= ny < 12 and field[ny][nx] == 'P':
-
-                    if [ny, nx] not in P:
-                        emptySide = False
-
-                        visited.append([ny, nx])
-
-                        queue.append([ny, nx])
-
-            if emptySide:
-
-                if len(P) >= 4:
-
-                    for ry, rx in P:
-                        field[ry][rx] = '.'
-
-                P = []
-
-
-        elif color == 'Y':
-
-            if [cy, cx] in Y:
-                continue
-            Y.append([cy, cx])
-            emptySide = True
-            for i in range(4):
-                nx = cx + dx[i]
-                ny = cy + dy[i]
-                if 0 <= nx < 6 and 0 <= ny < 12 and field[ny][nx] == 'Y':
-                    if [ny, nx] not in Y:
-                        emptySide = False
-                        visited.append([ny, nx])
-                        queue.append([ny, nx])
-            if emptySide:
-                if len(Y) >= 4:
-                    for ry, rx in Y:
-                        field[ry][rx] = '.'
-
-                Y = []
-
-
-        else:
-            for i in range(4):
-                nx = cx + dx[i]
-                ny = cy + dy[i]
-                if 0<= nx < 6 and 0<=ny<12  and [ny, nx] not in visited :
-
-                    visited.append([ny, nx])
-                    queue.append([ny, nx])
-
-
+import sys
+input = sys.stdin.readline
+dx = [1, -1, 0, 0]
+dy = [0, 0, -1, 1]
+def bfs(i, j, char):
+    q = deque()
+    q.append([i, j])
+    chain = []
+    chain.append([i, j])
+    while q:
+        x, y = q.popleft()
+        for k in range(4):
+            nx = x + dx[k]
+            ny = y + dy[k]
+            if 0 <= nx < 12 and 0 <= ny < 6 and visit[nx][ny] == 0 and s[nx][ny] == char:
+                visit[nx][ny] = 1
+                q.append([nx, ny])
+                chain.append([nx, ny])
+    if len(chain) > 3:
+        for x, y in chain:
+            s[x][y] = "."
+        return True
+    return False
 def down():
     for i in range(6):
-        tmp = 0
-        for j in range(11, -1, -1):
-            if field[j][i] != ".":
-                for k in range(11, j, -1):
-                    if field[k][i] == ".":
-                        field[k][i] = field[j][i]
-                        field[j][i] = '.'
-                        break
+        for j in range(10, -1, -1):
+            for k in range(11, j, -1):
+                if s[j][i] != "." and s[k][i] == ".":
+                    s[k][i] = s[j][i]
+                    s[j][i] = "."
+                    break
+s = [list(input().strip()) for i in range(12)]
+result = 0
 
-def check(tmp, field):
+while True:
+    FLAG = False
+    visit = [[0] * 6 for i in range(12)]
     for i in range(12):
         for j in range(6):
-            if field[i][j] != tmp[i][j]:
-                return True
-    return False
+            if s[i][j] != "." and visit[i][j] == 0:
+                visit[i][j] = 1
+                if FLAG:
+                    bfs(i, j, s[i][j])
+                else:
+                    FLAG = bfs(i, j, s[i][j])
 
-recursion = True
-cnt = 0
-while recursion:
-    tmp = [item[:] for item in field]
-
-
-    bfs()
-    print("explosion")
-    for i in range(12):
-        print(field[i])
-    print()
-    cnt += 1
+    if not FLAG:
+        break
     down()
-    print("down")
-    for i in range(12):
-        print(field[i])
-    print()
-
-    recursion = check(tmp, field)
-    if not recursion:
-        cnt -= 1
-
-print(cnt)
-
-
-
-#
-# bfs(find())
-# for i in range(12):
-#     print(field[i])
+    result += 1
+print(result)
