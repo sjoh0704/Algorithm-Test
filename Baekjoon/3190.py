@@ -26,9 +26,7 @@ def move(sec=100, dir=0):
         ny = head[0] + dy[dir]
         nx = head[1] + dx[dir]
         count += 1
-        if 0 > nx or  nx >= N or 0 > ny or ny >= N:
-            return False
-        if [ny, nx] in snake:
+        if 0 > nx or nx >= N or 0 > ny or ny >= N or [ny, nx] in snake:
             return False
         snake.appendleft([ny, nx])
         if area[ny][nx] == 1:
@@ -46,7 +44,7 @@ def findDir(base_dir, which_dir):
         base_dir -= 1
         if base_dir == -1:
             base_dir = 3
-    return  base_dir
+    return base_dir
 
 next_dir = 0
 count = 0
@@ -57,9 +55,6 @@ while FLAG:
         FLAG = move(dir[i][0], next_dir)
         next_dir = findDir(next_dir, dir[i][1])
     else:
-        move(dir=next_dir)
-        break
+        FLAG = move(dir=next_dir)
     i += 1
 print(count)
-
-# print(snake)
