@@ -25,9 +25,7 @@ def solve(team):
 
 answer = 100000000000
 for c in comb:
-    tmp = solve(c)
-    if answer > tmp:
-        answer = tmp
+    answer = min(answer, solve(c))
 
 print(answer)
 
