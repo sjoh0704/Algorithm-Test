@@ -17,19 +17,17 @@ dy = [0, 0, 0, -1, 1]
 
 def turn():
     for i in range(1, K+1):
-
         FLAG = False
         for j in range(N):
             for k in range(N):
                 elem = area[j][k]
                 for l in range(len(elem)):
                     if elem[l][0] == i:
-                        cdir = elem[l][1]
                         FLAG = True
+                        cdir = elem[l][1]
                         ny = dy[cdir] + j
                         nx = dx[cdir] + k
                         if not(0<=ny<N and 0<=nx<N) or color[ny][nx] == 2:
-                      
                             if cdir == 1:
                                 cdir = 2
                             elif cdir == 2:
@@ -42,9 +40,7 @@ def turn():
                             nx = dx[cdir] + k
                             area[j][k][l][1] = cdir
 
-                            if not(0<=ny<N and 0<=nx<N) or color[ny][nx] == 2:
-                                area[j][k][l][1] = cdir
-                            else:
+                            if 0<=ny<N and 0<=nx<N:
                                 if color[ny][nx] == 1:
                                     area[ny][nx].extend(elem[l:][::-1])
                                     area[j][k] = elem[:l]
@@ -62,7 +58,6 @@ def turn():
                                 area[j][k] = elem[:l]
                             if len(area[ny][nx]) >= 4:
                                 return 1
-
                     if FLAG:    
                         break
                 if FLAG:
@@ -75,14 +70,9 @@ cnt = 0
 while 1:
     cnt += 1  
     check = turn()
-
     if check == 1:
         print(cnt)
         break
     elif cnt > 1000:
         print(-1)
         break
-  
-# for a in area:
-#     print(a)                        
-# print()
