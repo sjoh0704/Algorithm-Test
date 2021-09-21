@@ -1,25 +1,27 @@
+from collections import deque
 import sys
 read = sys.stdin.readline
 N, M = map(int ,read().split())
-know = list(map(int ,read().split()))[1:]
+know = deque(list(map(int ,read().split()))[1:])
 partys = []
 for _ in range(M):
     partys.append(list(map(int, read().split()))[1:])
-
-
-black = []
-for k in know:
-    for party in partys:
-        if k in party:
-            black.extend(party)
-black = list(set(black))
-
+visit = [False] * (N+1)
+check = [True] * M
+while know:
+    ck = know.pop()
+    if visit[ck]:
+        continue
+    visit[ck] = True
+    for i, party in enumerate(partys):
+        if ck not in party:
+            continue
+        check[i] = False
+        for p in party:
+            if p != ck:  
+                know.append(p)            
 cnt = 0
-for party in partys:
-    for b in black:
-        if b in party:
-            cnt += 1
-            break
-   
-ans = M - cnt
-print(ans)
+for c in check:
+    if c:
+        cnt += 1
+print(cnt)
