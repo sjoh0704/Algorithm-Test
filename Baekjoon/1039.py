@@ -1,46 +1,31 @@
-from collections import deque
 import sys
 from itertools import combinations
+from collections import deque
 read = sys.stdin.readline
-tmp = read().split()
-N = tmp[0]
-K = int(tmp[1])
-pairs = list(combinations(list(range(1, len(N)+1)), 2))
-
-def swap_number(n, pair):
-    n_list = list(n)    
-    a, b = map(lambda x:x-1, pair)
-    tmp = n_list[a]
-    n_list[a] = n_list[b]
-    n_list[b] = tmp
-    return "".join(n_list)
-
-total = set()
-visited = [[False for _ in range(10000001)] for _ in range(K+1)]
-def bfs():
-    queue = deque()
-    queue.append([N, 0])
-    ret = 0
+N, K = map(int, read().split())
+combi = list(combinations(range(1, len(str(N))+1), 2))
+def swap(N, a, b):
+    _N = list(N)
+    _N[a-1], _N[b-1] = _N[b-1], _N[a-1]
+    return "".join(_N)
+def bfs(N, K):
+    ans, cnt = 0, 0
+    visit = []
+    queue = deque([[N, cnt]])
     while queue:
-        cn, cc = queue.popleft()
-
+        cq, cc = queue.popleft()
+        if [cq, cc] in visit:
+            continue
+        visit.append([cq, cc])
         if cc == K:
-            ret = max(ret, int(cn))
-            continue
-        if visited[cc][int(cn)]:
-            continue
-            visit[cc][int(cn)] = True
-
-        for pair in pairs:
-            nn = swap_number(cn, pair)
-            if nn[0] == "0":
+            ans = max(ans, int(cq))
+        for f, s in combi:
+            next = swap(cq, f, s)
+            if next[0] == "0" or cc + 1 > K:
                 continue
-            queue.append([nn, cc + 1])
-    return ret
-ans = bfs()
-if not ans:
-    print(-1)
-else:
-    print(ans)      
-
-
+            queue.append([next, cc+1])
+    if ans == 0:
+        print(-1)
+    else:
+        print(ans)
+bfs(str(N), K)
