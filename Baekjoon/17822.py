@@ -8,11 +8,10 @@ for _ in range(N):
 way = []
 for _ in range(T):
     way.append(list(map(int, read().split())))
-print(area)
-print(way)
-# dir = [1, -1] 
+    
 dx = [0, 0, -1 ,1]
 dy = [1, -1, 0, 0]
+
 def rotate(x, d, k):
     for i in range(N):
         if (i + 1) % x == 0:
@@ -26,50 +25,51 @@ def rotate(x, d, k):
                     area[i].append(tmp)
 
 def bfs():
-    visit = [[0 for _ in range(M)] for _ in range(N)]
-            
+    cnt = 0
     for i in range(N):
         for j in range(M):
             if area[i][j] == 0:
                 continue
             target = area[i][j]
-            print()
-            print("--------------------------------------",target)
             queue = deque([[i, j]])
             while queue:
-                print(queue)
                 cy, cx = queue.popleft()
-                if visit[cy][cx]:
-                    continue
-                visit[cy][cx] = 1
-                for i in range(4):
-                    ny = cy + dy[i]
-                    nx = cx + dx[i]
-                    if ny == N:
-                        ny = 0
+                for k in range(4):
+                    ny = cy + dy[k]
+                    nx = cx + dx[k]
+                    if ny == N or ny == -1:
+                        continue
                     if nx == M:
                         nx = 0
-                    if ny == -1:
-                        ny = N-1
                     if nx == -1:
                         nx = M-1
                     if area[ny][nx] == target:
+                        cnt += 1
                         area[cy][cx] = 0
                         area[ny][nx] = 0
                         queue.append([ny, nx])
-for a in area:
-    print(a)
-print()
-rotate(2, 0, 1)
-for a in area:
-    print(a)
-print()
-bfs()
+    if cnt == 0:
+        total = 0
+        count = 0
+        for i in range(N):
+            for j in range(M):
+                if area[i][j]:
+                    total += area[i][j] 
+                    count += 1
+        if count != 0:
+            avg = total/count
+            for i in range(N):
+                for j in range(M):
+                    if area[i][j] > avg:
+                        area[i][j] -= 1
+                    elif 0 < area[i][j] < avg:
+                        area[i][j] += 1
 
-for a in area:
-    print(a)
-
-
-
-
-    
+for x, d, k in way:
+    rotate(x, d, k)
+    bfs()
+ans = 0
+for i in range(N):
+    for j in range(M):
+        ans += area[i][j]
+print(ans)
