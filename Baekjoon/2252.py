@@ -1,33 +1,26 @@
-import sys
-read = sys.stdin.readline
-N, M = map(int, read().split())
-
-case = []
-area = [[0 for _ in range(N+1)] for _ in range(N+1)]
-for _ in range(M):
-    a, b = map(int ,read().split())
-    area[a][b] += 1
-stack = []
-for i in range(1, N+1):
-    for j in range(1, N+1):
-        if area[i][j] == 0:
-            stack.append([i, j])
-ans = set()
-while stack:
-    a, b = stack.pop()
-    print(a, b)
-    ans.add(a)
-    for i in range(1, N+1):
-        if area[b][i] > 0:
-            area[b][i] -= 1
-            if area[b][j] == 0:
-                stack.append([b, i])
-
-
-ans = list(ans)[::-1]
-for a in ans:
-    print(a, end=" ")
-
-
-
-
+num_student, num_compare = map(int, input().split())
+graph_list = []
+student_list = [[] for i in range(num_student + 1)]
+indegree = [0 for i in range(num_student + 1)]
+queue = []
+result = []
+for i in range(num_compare):
+    graph = list(map(int, input().split()))
+    graph_list.append(graph)
+for [i, j] in graph_list:
+    student_list[i].append(j)
+    indegree[j] += 1
+for i in range(1, num_student + 1):
+    if indegree[i] == 0:
+        queue.append(i)
+while queue:
+    for i in queue:
+        temp = i
+        queue.remove(i)
+        result.append(temp)
+        for j in student_list[temp]:
+            indegree[j] -= 1
+            if indegree[j] == 0:
+                queue.append(j) 
+for i in result:
+    print(i, end=' ')
