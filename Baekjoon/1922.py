@@ -5,16 +5,12 @@ M = int(read())
 case = []
 for _ in range(M):
     case.append(list(map(int ,read().split())))
-
 sorted_case = sorted(case, key=lambda x:x[2]) 
-# print(sorted_case)
 parents = [i for i in range(N+1)]
 def find(x):
     if parents[x] == x:
-        return x    
-        
+        return x            
     parents[x] = find(parents[x])
-
     return parents[x]
 
 def union(x, y):
