@@ -1,30 +1,26 @@
 import sys
+from heapq import heappush, heappop
 read = sys.stdin.readline
 N = int(read())
 M = int(read())
-MAX = int(1e9)
-cost = [[0 for _ in range(N+1)] for _ in range(N+1)]
-for _ in range(M): 
-    s, d, c = map(int, read().split())
-    cost[s][d] = c
-src, dest = map(int, read().split())
-graph = [0 for _ in range(N+1)]
-for i in range(N+1):
-    if cost[src][i]:
-        graph[i] = cost[src][i]
-    else:
-        graph[i] = MAX
-exclude = [src]
-while len(exclude) < N:
-    min_idx = 0
-    for i in range(1, N+1):
-        if graph[min_idx] > graph[i] and i not in exclude:
-            min_idx = i
-    for i, c in enumerate(cost[min_idx]):
-        if c:
-            graph[i] = min(graph[i], graph[min_idx] + cost[min_idx][i])
-    exclude.append(min_idx)
-if graph[dest] == MAX:
-    print(0)
-else:
-    print(graph[dest])
+cost = [[] for _ in range(N+1)]
+inf = int(1e9)
+for _ in range(M):
+    s, e, v = map(int, read().split())
+    cost[s].append([e, v])
+start, end = map(int ,read().split())
+def dijkstra(start, end):
+    dp = [inf for _ in range(N+1)]
+    dp[start] = 0
+    hq = []
+    heappush(hq, [0, start])
+    while hq:
+        cv, ce = heappop(hq)
+        if dp[ce] < cv:
+            continue
+        for ne, nv in cost[ce]:
+            if dp[ne] > dp[ce] + nv:
+                dp[ne] = dp[ce] + nv
+                heappush(hq, [dp[ne], ne])
+    print(dp[end])
+dijkstra(start, end)
