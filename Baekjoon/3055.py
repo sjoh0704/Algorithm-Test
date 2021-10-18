@@ -1,75 +1,55 @@
-from collections import deque
 import sys
-inf = int(1e9)
-read = sys.stdin.readline
-R, C = map(int, read().split())
-area = []
-water = []
-start = None
-for i in range(R):
-    tmp = list(read())[:-1]
-  
-    area.append(tmp)
-    for j in range(C):
-        if tmp[j] == 'S':
-            start = [i, j, 'S']
-        elif tmp[j] == '*':
-            water.append([i, j, '*'])
-    
-queue = deque()
-cnt = deque()
-# visited = [[ 0 for _ in range(C)]for _ in range(R)]
-visited = []
-for w in water:
-    queue.append(w)
-queue.append(start)
-cnt.append(0)
-dy = [0, 0, 1, -1]
-dx = [1, -1, 0, 0]
-ans = inf
+from _collections import deque
+r,c=map(int,input().split())
+maps=[list(p for p in sys.stdin.readline().strip()) for _ in range(r)]
+visit=[[0]*c for _ in range(r)]
+dr=[1,0,-1,0]
+dc=[0,-1,0,1]
+queue=deque()
+
+#물,고슴도치 위치 queue에 담기
+#굴의 위치는 target에 저장
+for i in range(r):
+    for j in range(c):
+        if maps[i][j]=='*':
+            queue.append([i,j])
+        elif maps[i][j]=='S':
+            queue.appendleft([i,j])
+        elif maps[i][j]=='D':
+            target_r=i
+            target_c=j
+
+flag=False
+#물과 고슴도치 위치에서 BFS탐색
 while queue:
-    cy, cx, ch= queue.popleft()
-    # print(cy, cx, cc)
-    
-    if ch == '*':
-        # print('*',cy, cx, cc)
-        # print(queue)
-        area[cy][cx]= '*'
-        for i in range(4):
-            ny = cy + dy[i]
-            nx = cx + dx[i]
-            if 0<= ny < R and 0<= nx < C:
-                if area[ny][nx] != 'D' and area[ny][nx] != 'X' and area[ny][nx] != '*':
-                    queue.append([ny, nx, '*'])
-                
-
-
-    elif ch =='S' and [cy,cx] not in visited:
-        cc = cnt.popleft()
-        # print(cnt)
-        # print('s',cy, cx, cc)
-        # print(queue)
-        if area[cy][cx] == '*':
+    # 굴에 도착하고 나면 while문 탈출
+    if flag:
+        break
+    pr, pc = queue.popleft()
+    for i in range(4):
+        nr,nc=pr+dr[i],pc+dc[i]
+        if nr<0 or nr>=r or nc<0 or nc>=c:
             continue
 
+        #물
+        if maps[pr][pc]=='*':
+            if maps[nr][nc]=='.' or maps[nr][nc]=='S':
+                maps[nr][nc]='*'
+                queue.append([nr,nc])
 
-        if area[cy][cx] == 'D':
-            ans = min(ans, cc)
-            # print(ans)
+        #고슴도치
+        elif maps[pr][pc] == 'S':
+            if maps[nr][nc] == '.':
+                maps[nr][nc] = 'S'
+                visit[nr][nc] = visit[pr][pc] + 1
+                queue.append([nr,nc])
+            #굴에 도착하면 탈출
+            elif maps[nr][nc] == 'D':
+                flag=True
+                visit[nr][nc]=visit[pr][pc]+1
+                break
 
-        visited.append([cy,cx])
-        for i in range(4):
-            ny = cy + dy[i]
-            nx = cx + dx[i]
-            if 0<= ny < R and 0<= nx < C:
-                if area[ny][nx] != '*' and area[ny][nx] != 'X':
-                    
-                    queue.append([ny, nx, 'S'])
-                    cnt.append(cc+1)
-    else:
-        cc = cnt.popleft()
-
-if ans == inf:
+#굴에 도착하지 못하면 visit[굴]이 0이므로
+if visit[target_r][target_c]==0:
     print('KAKTUS')
-else:
-    print(ans)
+else: print(visit[target_r][target_c])
