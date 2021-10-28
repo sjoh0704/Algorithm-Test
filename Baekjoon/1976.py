@@ -6,7 +6,7 @@ M = int(read())
 parents = [i for i in range(N+1)]
 
 area = []
-for i in range(1, M+1):
+for i in range(1, N+1):
     tmp = list(map(int ,read().split()))
     area.append(tmp)
 
@@ -17,38 +17,32 @@ def find(x):
         return x
     parents[x] = find(parents[x])
     return parents[x]
-
+    
 def union(x, y):
-    a = parents[x]
-    b = parents[y]
-    if a < b:
-        parents[y] = a
+    x = find(x)
+    y = find(y)
+    if x < y:
+        parents[y] = x
     else:
-        parents[x] = b
+        parents[x] = y
 
 def same_parents(x, y):
-    x = parents[x]
-    y = parents[y]
+    x = find(x)
+    y = find(y)
     if x==y:
         return True
     else:
         return False
-# print()
+
 for i in range(N):
     for j in range(N):
         if area[i][j]:
-            if not same_parents(i+1, j+1):
-                union(i+1, j+1)
-for i in range(N):
-    for j in range(N):
-        if area[i][j]:
-            if not same_parents(i+1, j+1):
-                union(i+1, j+1)
+            union(i+1, j+1)
 
 
 
 FLAG = True
-for i in range(len(move)-1):
+for i in range(M-1):
     if not same_parents(move[i], move[i+1]):
         FLAG = False
         break
