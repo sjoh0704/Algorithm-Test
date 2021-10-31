@@ -2,14 +2,11 @@ import sys
 read = sys.stdin.readline
 N = int(read())
 M = int(read())
-
 parents = [i for i in range(N+1)]
-
 area = []
 for i in range(1, N+1):
     tmp = list(map(int ,read().split()))
     area.append(tmp)
-
 move = list(map(int, read().split()))
 
 def find(x):
@@ -39,8 +36,6 @@ for i in range(N):
         if area[i][j]:
             union(i+1, j+1)
 
-
-
 FLAG = True
 for i in range(M-1):
     if not same_parents(move[i], move[i+1]):
@@ -50,6 +45,3 @@ if FLAG:
     print("YES")
 else:
     print("FALSE")
-
-
-
